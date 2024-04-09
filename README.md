@@ -13,6 +13,7 @@ git clone https://github.com/JoeArtisan/earthquake-web.git
 ## Project Setup
 
 ```sh
+cd earthquake-web
 npm install
 ```
 
