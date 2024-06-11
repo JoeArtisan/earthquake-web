@@ -13,7 +13,7 @@ let type = ref("");
 const getFeatures = async () => {
   try {
     features.value = [];
-    const response = await fetch('http://127.0.0.1:3000/api/features?page=' + page.value + '&per_page=' + per_page.value + '&mag_type=' + type.value);
+    const response = await fetch('http://127.0.0.1:3000/api/features?page=' + page.value + '&per_page=' + per_page.value + '&mag_type=' + type.value,{ mode: "no-cors" });
     const json = await response.json();
 
     setTimeout(() => {
@@ -28,7 +28,7 @@ const getFeatures = async () => {
 
 const getComments = async (feature) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/api/features/' + feature.id + '/comments');
+    const response = await fetch('http://127.0.0.1:3000/api/features/' + feature.id + '/comments'{ mode: "no-cors" });
     const json = await response.json();
     comments.value = json.data.reverse();
   } catch (error) {
@@ -42,7 +42,8 @@ async function storeComment(feature) {
     const response = await fetch('http://127.0.0.1:3000/api/features/' + feature.id + '/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ body: comment.value })
+      body: JSON.stringify({ body: comment.value }),
+      mode: "no-cors"
     });
 
     comment.value = "";
