@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+var axios = require("axios");
 
 let features = ref([]);
 let comments = ref([]);
@@ -10,11 +11,21 @@ let page = ref(1);
 let per_page = ref(25);
 let type = ref("");
 
+  const response = await axios.get("https://api.backend.com/datos", {
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+
 const getFeatures = async () => {
   try {
     features.value = [];
-    const response = await fetch('http://127.0.0.1:3000/api/features?page=' + page.value + '&per_page=' + per_page.value + '&mag_type=' + type.value,{ mode: "no-cors" });
-    const json = await response.json();
+    const response = await axios.get('http://127.0.0.1:3000/api/features?page=' + page.value + '&per_page=' + per_page.value + '&mag_type=' + type.value, {
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+    const json = response.data;
 
     setTimeout(() => {
       features.value = json.data;
@@ -28,8 +39,12 @@ const getFeatures = async () => {
 
 const getComments = async (feature) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/api/features/' + feature.id + '/comments'{ mode: "no-cors" });
-    const json = await response.json();
+     const response = await axios.get('http://127.0.0.1:3000/api/features/' + feature.id + '/comments', {
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+    const json = response.data;
     comments.value = json.data.reverse();
   } catch (error) {
     console.error('Error', error);
@@ -39,15 +54,14 @@ const getComments = async (feature) => {
 async function storeComment(feature) {
   try {
     let comment = document.getElementById("comment");
-    const response = await fetch('http://127.0.0.1:3000/api/features/' + feature.id + '/comments', {
-      method: 'POST',
+
+    const response = await axios.post('http://127.0.0.1:3000/api/features/' + feature.id + '/comments', {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ body: comment.value }),
-      mode: "no-cors"
     });
-
+    
     comment.value = "";
-    const responseData = await response.json();
+    const responseData = response.data;
     getComments(feature);
     return responseData;
   } catch (error) {
